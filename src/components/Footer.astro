@@ -1,0 +1,134 @@
+---
+import { Image } from "astro:assets";
+import Logo from "../assets/icons/logo.avif";
+import Facebook from "../assets/icons/facebook.avif";
+import Instagram from "../assets/icons/instagram.avif";
+import Linkedin from "../assets/icons/linkedin.avif";
+---
+
+<footer class="bg-gray-50 border-t border-gray-200 mt-16">
+    <div
+        class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-gray-700"
+    >
+        <!-- Logo & description -->
+        <div>
+            <a href="/" class="flex items-center gap-2 mb-4">
+                <Image
+                    src={Logo}
+                    alt="Logo Azuréa Immo"
+                    class="w-8 h-8 object-contain rounded"
+                />
+                <span class="text-xl font-semibold text-primary-600"
+                    >Azuréa Immo</span
+                >
+            </a>
+            <p class="text-sm text-gray-500 leading-relaxed">
+                Votre partenaire de confiance pour trouver, vendre ou louer le
+                bien immobilier idéal.
+            </p>
+        </div>
+
+        <!-- Navigation -->
+        <div>
+            <h3 class="text-sm font-semibold text-gray-900 uppercase mb-3">
+                Navigation
+            </h3>
+            <ul class="space-y-2 text-sm">
+                <li>
+                    <a href="/" class="hover:text-primary-600 transition"
+                        >Accueil</a
+                    >
+                </li>
+                <li>
+                    <a href="/offres" class="hover:text-primary-600 transition"
+                        >Nos Offres</a
+                    >
+                </li>
+                <li>
+                    <a href="/agence" class="hover:text-primary-600 transition"
+                        >L’Agence</a
+                    >
+                </li>
+                <li>
+                    <a
+                        href="/services"
+                        class="hover:text-primary-600 transition">Services</a
+                    >
+                </li>
+                <li>
+                    <a href="/contact" class="hover:text-primary-600 transition"
+                        >Contact</a
+                    >
+                </li>
+            </ul>
+        </div>
+
+        <!-- Coordonnées sans icônes -->
+        <div>
+            <h3 class="text-sm font-semibold text-gray-900 uppercase mb-3">
+                Contact
+            </h3>
+            <ul class="space-y-2 text-sm">
+                <li>
+                    <a
+                        href="mailto:contact@azureaimmo.fr"
+                        class="hover:text-primary-600 transition"
+                    >
+                        contact@azureaimmo.fr
+                    </a>
+                </li>
+                <li>04 82 99 12 45</li>
+                <li>24 Rue des Lilas, 06000 Nice</li>
+            </ul>
+        </div>
+
+        <!-- Réseaux sociaux -->
+        <div>
+            <h3 class="text-sm font-semibold text-gray-900 uppercase mb-3">
+                Suivez-nous
+            </h3>
+            <div class="flex gap-4">
+                <a
+                    href="#"
+                    class="hover:opacity-80 transition"
+                    aria-label="Facebook"
+                >
+                    <Image
+                        src={Facebook}
+                        alt="Facebook"
+                        class="w-5 h-5 object-contain"
+                    />
+                </a>
+                <a
+                    href="#"
+                    class="hover:opacity-80 transition"
+                    aria-label="Instagram"
+                >
+                    <Image
+                        src={Instagram}
+                        alt="Instagram"
+                        class="w-5 h-5 object-contain"
+                    />
+                </a>
+                <a
+                    href="#"
+                    class="hover:opacity-80 transition"
+                    aria-label="LinkedIn"
+                >
+                    <Image
+                        src={Linkedin}
+                        alt="LinkedIn"
+                        class="w-5 h-5 object-contain"
+                    />
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copyright -->
+    <div
+        class="border-t border-gray-200 mt-8 py-4 text-center text-sm text-gray-500"
+    >
+        © 2026 Azuréa Immo — Tous droits réservés.
+    </div>
+</footer>

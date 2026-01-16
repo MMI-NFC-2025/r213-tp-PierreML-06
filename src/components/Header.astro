@@ -1,4 +1,113 @@
-<nav>
-    <a href="/">Accueil</a>
-    <a href="offres">Offres</a>
-</nav>
+---
+import { Image } from "astro:assets";
+import Logo from "../assets/icons/logo.avif";
+---
+
+<header
+    class="fixed top-0 left-0 w-full z-40 bg-white border-b border-gray-100 shadow-sm"
+>
+    <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16"
+    >
+        <!-- Logo -->
+        <a
+            href="/"
+            class="flex items-center gap-2 text-primary-600 font-semibold text-2xl"
+        >
+            <Image
+                src={Logo}
+                alt="Logo Azuréa Immo"
+                class="w-9 h-9 object-contain"
+            />
+            <span>Azuréa Immo</span>
+        </a>
+
+        <!-- Menu desktop -->
+        <nav class="hidden md:flex space-x-8 text-gray-700 font-medium">
+            <a href="/" class="hover:text-primary-600 transition">Accueil</a>
+            <a href="/offres" class="hover:text-primary-600 transition"
+                >Offres</a
+            >
+            <a href="/agence" class="hover:text-primary-600 transition"
+                >L’Agence</a
+            >
+            <a href="/services" class="hover:text-primary-600 transition"
+                >Services</a
+            >
+            <a href="/contact" class="hover:text-primary-600 transition"
+                >Contact</a
+            >
+        </nav>
+
+        <!-- Burger button -->
+        <button
+            id="burger"
+            aria-label="Menu"
+            aria-expanded="false"
+            class="relative w-10 h-10 flex items-center justify-center md:hidden"
+        >
+            <span
+                class="line absolute w-6 h-[2px] bg-gray-800 rounded transition-all duration-300 ease-in-out -translate-y-2"
+            ></span>
+            <span
+                class="line absolute w-6 h-[2px] bg-gray-800 rounded transition-all duration-300 ease-in-out"
+            ></span>
+            <span
+                class="line absolute w-6 h-[2px] bg-gray-800 rounded transition-all duration-300 ease-in-out translate-y-2"
+            ></span>
+        </button>
+    </div>
+
+    <!-- Menu mobile -->
+    <nav
+        id="menu"
+        class="hidden md:hidden flex-col bg-white border-t border-gray-100 px-6 py-4 text-gray-700 font-medium space-y-3 transform transition-all duration-300 opacity-0 -translate-y-5"
+    >
+        <a href="/" class="block hover:text-primary-600 transition">Accueil</a>
+        <a href="/offres" class="block hover:text-primary-600 transition"
+            >Offres</a
+        >
+        <a href="/agence" class="block hover:text-primary-600 transition"
+            >L’Agence</a
+        >
+        <a href="/services" class="block hover:text-primary-600 transition"
+            >Services</a
+        >
+        <a href="/contact" class="block hover:text-primary-600 transition"
+            >Contact</a
+        >
+    </nav>
+
+    <script>
+        const burger = document.getElementById("burger");
+        const lines = burger.querySelectorAll(".line");
+        const menu = document.getElementById("menu");
+        let open = false;
+
+        burger.addEventListener("click", () => {
+            open = !open;
+            burger.setAttribute("aria-expanded", open);
+
+            if (open) {
+                lines[0].classList.add("translate-y-0", "rotate-45");
+                lines[1].classList.add("opacity-0");
+                lines[2].classList.add("translate-y-0", "-rotate-45");
+            } else {
+                lines[0].classList.remove("translate-y-0", "rotate-45");
+                lines[1].classList.remove("opacity-0");
+                lines[2].classList.remove("translate-y-0", "-rotate-45");
+            }
+
+            if (open) {
+                menu.classList.remove("hidden");
+                setTimeout(
+                    () => menu.classList.remove("opacity-0", "-translate-y-5"),
+                    10,
+                );
+            } else {
+                menu.classList.add("opacity-0", "-translate-y-5");
+                setTimeout(() => menu.classList.add("hidden"), 300);
+            }
+        });
+    </script>
+</header>
