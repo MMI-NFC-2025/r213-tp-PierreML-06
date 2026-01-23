@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Layout from "../layouts/Layout.astro";
+import OffreCard from "../components/OffreCard.astro";
 
 const offres = [
     {
@@ -40,9 +41,58 @@ const offres = [
 ---
 
 <Layout titre="Offres">
-    <h1>Offres</h1>
+    <Layout titre="Offres">
+        <h1 class="text-3xl font-bold mb-6">Nos offres</h1>
 
-    <ul>
-        {offres.map((offre) => <li>{offre.nomMaison}</li>)}
-    </ul>
+        <!-- Bouton filtre -->
+        <button
+            id="favori-button"
+            class="bg-slate-600 rounded-lg text-white p-2 mb-6"
+        >
+            Afficher les favoris
+        </button>
+
+        <!-- Conteneur des offres -->
+        <div class="grid gap-4">
+            {
+                offres.map((offre) => (
+                    <div
+                        class="offre border rounded-lg p-4"
+                        data-favori={offre.favori.toString()}
+                    >
+                        <h2 class="font-semibold text-lg">{offre.nomMaison}</h2>
+                        <p class="text-sm text-gray-600">{offre.adresse}</p>
+                        <p class="mt-2">
+                            {offre.surface} m² · {offre.nbChambres} ch ·{" "}
+                            {offre.nbSdb} sdb
+                        </p>
+                        <p class="font-bold mt-2">{offre.prix} €</p>
+                    </div>
+                ))
+            }
+        </div>
+
+        <!-- Script interactivité -->
+        <script>
+            const button = document.getElementById("favori-button");
+            let showOnlyFavorites = false;
+
+            button?.addEventListener("click", () => {
+                showOnlyFavorites = !showOnlyFavorites;
+                const offres = document.querySelectorAll(".offre");
+
+                offres.forEach((offre) => {
+                    const isFavori = offre.dataset.favori === "true";
+
+                    if (showOnlyFavorites) {
+                        offre.style.display = isFavori ? "block" : "none";
+                        button.textContent = "Afficher tout";
+                    } else {
+                        offre.style.display = "block";
+                        button.textContent = "Afficher les favoris";
+                    }
+                });
+            });
+        </script>
+    </Layout>
 </Layout>
