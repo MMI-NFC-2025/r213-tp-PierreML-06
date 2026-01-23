@@ -1,7 +1,16 @@
 ---
-import "../styles/global.css";
 import Layout from "../layouts/Layout.astro";
 import OffreCard from "../components/OffreCard.astro";
+
+import Image1 from "../assets/img/image1.png";
+import Image2 from "../assets/img/image2.png";
+import Image3 from "../assets/img/image3.png";
+
+const images = {
+    "image1.png": Image1,
+    "image2.png": Image2,
+    "image3.png": Image3,
+};
 
 const offres = [
     {
@@ -41,58 +50,42 @@ const offres = [
 ---
 
 <Layout titre="Offres">
-    <Layout titre="Offres">
-        <h1 class="text-3xl font-bold mb-6">Nos offres</h1>
+    <h1 class="text-3xl font-bold mb-6">Nos offres</h1>
 
-        <!-- Bouton filtre -->
-        <button
-            id="favori-button"
-            class="bg-slate-600 rounded-lg text-white p-2 mb-6"
-        >
-            Afficher les favoris
-        </button>
+    <button
+        id="favori-button"
+        class="mb-8 rounded-full px-6 py-3 bg-slate-800 text-white"
+    >
+        Afficher les favoris
+    </button>
 
-        <!-- Conteneur des offres -->
-        <div class="grid gap-4">
-            {
-                offres.map((offre) => (
-                    <div
-                        class="offre border rounded-lg p-4"
-                        data-favori={offre.favori.toString()}
-                    >
-                        <h2 class="font-semibold text-lg">{offre.nomMaison}</h2>
-                        <p class="text-sm text-gray-600">{offre.adresse}</p>
-                        <p class="mt-2">
-                            {offre.surface} m² · {offre.nbChambres} ch ·{" "}
-                            {offre.nbSdb} sdb
-                        </p>
-                        <p class="font-bold mt-2">{offre.prix} €</p>
-                    </div>
-                ))
-            }
-        </div>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {
+            offres.map((offre) => (
+                <OffreCard {...offre} image={images[offre.imgUrl]} />
+            ))
+        }
+    </div>
 
-        <!-- Script interactivité -->
-        <script>
-            const button = document.getElementById("favori-button");
-            let showOnlyFavorites = false;
+    <script>
+        const button = document.getElementById("favori-button");
+        let showOnlyFavorites = false;
 
-            button?.addEventListener("click", () => {
-                showOnlyFavorites = !showOnlyFavorites;
-                const offres = document.querySelectorAll(".offre");
+        button?.addEventListener("click", () => {
+            showOnlyFavorites = !showOnlyFavorites;
+            const offres = document.querySelectorAll(".offre");
 
-                offres.forEach((offre) => {
-                    const isFavori = offre.dataset.favori === "true";
+            offres.forEach((offre) => {
+                const isFavori = offre.dataset.favori === "true";
 
-                    if (showOnlyFavorites) {
-                        offre.style.display = isFavori ? "block" : "none";
-                        button.textContent = "Afficher tout";
-                    } else {
-                        offre.style.display = "block";
-                        button.textContent = "Afficher les favoris";
-                    }
-                });
+                if (showOnlyFavorites) {
+                    offre.style.display = isFavori ? "block" : "none";
+                    button.textContent = "Afficher tout";
+                } else {
+                    offre.style.display = "block";
+                    button.textContent = "Afficher les favoris";
+                }
             });
-        </script>
-    </Layout>
+        });
+    </script>
 </Layout>
