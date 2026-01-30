@@ -1,27 +1,30 @@
 ---
-import { Image } from "astro:assets";
+import PbImage from "./PbImage.astro";
 
-interface Props {
-    nomMaison: string;
-    adresse: string;
-    prix: number;
-    surface: number;
-    nbChambres: number;
-    nbSdb: number;
-    favori: boolean;
-    image: ImageMetadata;
-}
+const { offre } = Astro.props;
 
-const { nomMaison, adresse, prix, surface, nbChambres, nbSdb, favori, image } =
-    Astro.props;
+const {
+    nomMaison,
+    adresse,
+    prix,
+    surface,
+    nbChambres,
+    nbSdb,
+    favori = false,
+} = offre;
 ---
 
 <article
     class="offre bg-white rounded-2xl shadow-sm overflow-hidden"
-    data-favori={favori.toString()}
+    data-favori={favori ? "true" : "false"}
 >
-    <div class="relative h-52">
-        <Image src={image} alt={nomMaison} class="w-full h-full object-cover" />
+    <div class="relative h-52 overflow-hidden">
+        <PbImage
+            record={offre}
+            recordImage={offre.images?.[0]}
+            width={500}
+            height={300}
+        />
 
         {
             favori && (
