@@ -1,0 +1,32 @@
+---
+import { getOffre, getImageUrl } from "../../js/backend.mjs";
+import Layout from "../../layouts/Layout.astro";
+
+const { id } = Astro.params;
+const offre = await getOffre(id);
+
+// sécurité si id invalide
+if (!offre) {
+    throw new Error("Offre introuvable");
+}
+---
+
+<Layout titre={offre.nomMaison}>
+    <h2 class="text-2xl font-bold mb-4">{offre.nomMaison}</h2>
+
+    <ul class="space-y-2">
+        <li><strong>Adresse :</strong> {offre.adresse}</li>
+        <li><strong>Surface :</strong> {offre.surface} m²</li>
+        <li><strong>Prix :</strong> {offre.prix} €</li>
+    </ul>
+
+    {
+        offre.image && (
+            <img
+                src={getImageUrl(offre, offre.image)}
+                alt={offre.nomMaison}
+                class="mt-6 rounded-xl"
+            />
+        )
+    }
+</Layout>
