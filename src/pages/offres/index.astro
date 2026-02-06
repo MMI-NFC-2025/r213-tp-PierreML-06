@@ -10,25 +10,32 @@ const offres = await getOffres();
 <Layout titre="Offres">
     <h1 class="text-3xl font-bold mb-6">Nos offres</h1>
 
-    <!-- ✅ LIEN DEMANDÉ À L'ÉTAPE 5 -->
-    <a
-        href="/offres/surface/80"
-        class="inline-block mb-6 text-blue-500 underline"
-    >
-        Voir les maisons de plus de 80 m²
-    </a>
+    <!-- BOUTONS -->
+    <div class="flex gap-4 mb-8">
+        <!-- Bouton lien vers la route dynamique surface -->
+        <a
+            href="/offres/surface/80"
+            role="button"
+            class="rounded-full px-6 py-3 bg-slate-800 text-white text-center"
+        >
+            Maisons de plus de 80 m²
+        </a>
 
-    <button
-        id="favori-button"
-        class="mb-8 rounded-full px-6 py-3 bg-slate-800 text-white"
-    >
-        Afficher les favoris
-    </button>
+        <!-- Bouton filtre favoris -->
+        <button
+            id="favori-button"
+            class="rounded-full px-6 py-3 bg-slate-600 text-white"
+        >
+            Afficher les favoris
+        </button>
+    </div>
 
+    <!-- LISTE DES OFFRES -->
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {offres.map((offre) => <OffreCard offre={offre} />)}
     </div>
 
+    <!-- SCRIPT FAVORIS -->
     <script>
         const button = document.getElementById("favori-button");
         let showOnlyFavorites = false;

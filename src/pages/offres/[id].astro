@@ -1,32 +1,66 @@
 ---
-import { getOffre, getImageUrl } from "../../js/backend.mjs";
 import Layout from "../../layouts/Layout.astro";
+import { getOffre, getImageUrl } from "../../js/backend.mjs";
 
 const { id } = Astro.params;
 const offre = await getOffre(id);
 
-// sécurité si id invalide
 if (!offre) {
     throw new Error("Offre introuvable");
 }
+
+const { nomMaison, adresse, surface, prix, favori = false } = offre;
 ---
 
-<Layout titre={offre.nomMaison}>
-    <h2 class="text-2xl font-bold mb-4">{offre.nomMaison}</h2>
+<Layout titre={nomMaison}>
+    <!-- Bouton retour -->
+    <a
+        href="/offres"
+        class="inline-block mb-6 text-sm text-blue-500 hover:underline"
+    >
+        ← Retour aux offres
+    </a>
 
-    <ul class="space-y-2">
-        <li><strong>Adresse :</strong> {offre.adresse}</li>
-        <li><strong>Surface :</strong> {offre.surface} m²</li>
-        <li><strong>Prix :</strong> {offre.prix} €</li>
-    </ul>
+    <!-- IMAGE HERO -->
+    <div class="w-full h-[380px] overflow-hidden rounded-3xl mb-8">
+        <img
+            src={getImageUrl(offre, offre.images?.[0])}
+            alt={nomMaison}
+            class="w-full h-full object-cover"
+        />
+    </div>
 
-    {
-        offre.image && (
-            <img
-                src={getImageUrl(offre, offre.image)}
-                alt={offre.nomMaison}
-                class="mt-6 rounded-xl"
-            />
-        )
-    }
+    <!-- TITRE + FAVORI -->
+    <div class="flex items-center gap-4 mb-6">
+        <h1 class="text-3xl font-bold">{nomMaison}</h1>
+
+        {
+            favori && (
+                <span
+                    class="bg-amber-400 text-black px-4 py-1 rounded-full
+                       text-sm font-semibold"
+                >
+                    ★ Favori
+                </span>
+            )
+        }
+    </div>
+
+    <!-- INFOS -->
+    <div class="bg-white rounded-2xl shadow-sm p-6 max-w-3xl">
+        <ul class="space-y-4 text-gray-700">
+            <li>
+                <strong>Adresse :</strong>
+                {adresse}
+            </li>
+            <li>
+                <strong>Surface :</strong>
+                {surface} m²
+            </li>
+            <li>
+                <strong>Prix :</strong>
+                <span class="text-lg font-bold ml-2">{prix} €</span>
+            </li>
+        </ul>
+    </div>
 </Layout>

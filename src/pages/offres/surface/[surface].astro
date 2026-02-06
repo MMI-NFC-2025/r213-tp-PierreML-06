@@ -1,9 +1,15 @@
 ---
-import { getOffres } from "../../../js/backend.mjs";
 import Layout from "../../../layouts/Layout.astro";
+import OffreCard from "../../../components/OffreCard.astro";
+import { getOffres } from "../../../js/backend.mjs";
 
 const { surface } = Astro.params;
 const minSurface = Number(surface);
+
+// Sécurité
+if (Number.isNaN(minSurface)) {
+    throw new Error("Surface invalide");
+}
 
 const offres = (await getOffres()).filter(
     (offre) => offre.surface > minSurface,
@@ -11,22 +17,33 @@ const offres = (await getOffres()).filter(
 ---
 
 <Layout titre={`Maisons > ${minSurface} m²`}>
-    <h2 class="text-2xl font-bold mb-6">
+    <h2 class="text-3xl font-bold mb-4">
         Maisons de plus de {minSurface} m²
     </h2>
 
-    <ul class="space-y-4">
-        {
-            offres.map((offre) => (
-                <li>
-                    <a
-                        href={`/offres/${offre.id}`}
-                        class="text-blue-400 hover:underline"
-                    >
-                        {offre.nomMaison} – {offre.surface} m²
-                    </a>
-                </li>
-            ))
-        }
-    </ul>
+    <p class="text-gray-500 mb-6">
+        {offres.length} maison(s) correspondent à ce critère
+    </p>
+
+    <!-- Bouton retour -->
+    <a
+        href="/offres"
+        class="inline-block mb-8 rounded-full px-6 py-3 bg-slate-800 text-white"
+    >
+        ← Retour aux offres
+    </a>
+
+    <!-- GRILLE DE CARTES -->
+    <section class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {offres.map((offre) => <OffreCard offre={offre} />)}
+    </section>
+
+    <!-- Aucun résultat -->
+    {
+        offres.length === 0 && (
+            <p class="mt-10 text-center text-gray-500">
+                Aucune maison ne correspond à ce critère.
+            </p>
+        )
+    }
 </Layout>
