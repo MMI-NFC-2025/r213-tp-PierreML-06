@@ -1,0 +1,32 @@
+---
+import { getOffres } from "../../../js/backend.mjs";
+import Layout from "../../../layouts/Layout.astro";
+
+const { surface } = Astro.params;
+const minSurface = Number(surface);
+
+const offres = (await getOffres()).filter(
+    (offre) => offre.surface > minSurface,
+);
+---
+
+<Layout titre={`Maisons > ${minSurface} m²`}>
+    <h2 class="text-2xl font-bold mb-6">
+        Maisons de plus de {minSurface} m²
+    </h2>
+
+    <ul class="space-y-4">
+        {
+            offres.map((offre) => (
+                <li>
+                    <a
+                        href={`/offres/${offre.id}`}
+                        class="text-blue-400 hover:underline"
+                    >
+                        {offre.nomMaison} – {offre.surface} m²
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
+</Layout>
