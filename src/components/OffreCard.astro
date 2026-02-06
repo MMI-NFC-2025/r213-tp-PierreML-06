@@ -18,7 +18,8 @@ const {
     class="offre bg-white rounded-2xl shadow-sm overflow-hidden"
     data-favori={favori ? "true" : "false"}
 >
-    <div class="relative h-52 overflow-hidden">
+    <!-- IMAGE CLIQUABLE -->
+    <a href={`/offres/${offre.id}`} class="block relative h-52 overflow-hidden">
         <PbImage
             record={offre}
             recordImage={offre.images?.[0]}
@@ -33,14 +34,14 @@ const {
                 </span>
             )
         }
-    </div>
+    </a>
 
     <div class="p-5">
-        <h2 class="font-semibold text-lg">{nomMaison}</h2>
-        <p class="text-sm text-gray-500">{adresse}</p>
-        <p class="mt-2 text-sm">
-            {surface} m² · {nbChambres} ch · {nbSdb} sdb
-        </p>
-        <p class="font-bold mt-3">{prix} €</p>
+        <!-- NOM CLIQUABLE -->
+        <h2 class="font-semibold text-lg">
+            <a href={`/offres/${offre.id}`} class="hover:underline">
+                {nomMaison}
+            </a>
+        </h2>
     </div>
 </article>
