@@ -1,60 +1,132 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import OffreCard from "../../components/OffreCard.astro";
-import { getOffres } from "../../js/backend.mjs";
+import { getOffres, filterByPrix } from "../../js/backend.mjs";
 
-// 🔥 données venant de PocketBase
-const offres = await getOffres();
+let message = "";
+let offres = [];
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+
+  const minPrixRaw = data.get("minPrix");
+  const maxPrixRaw = data.get("maxPrix");
+
+  const minPrix = Number(minPrixRaw);
+  const maxPrix = Number(maxPrixRaw);
+
+  const minOk = Number.isFinite(minPrix) && minPrix > 0;
+  const maxOk = Number.isFinite(maxPrix) && maxPrix > 0;
+
+  if (minOk && maxOk && maxPrix > minPrix) {
+    offres = await filterByPrix(minPrix, maxPrix);
+
+    if (offres.length === 0) {
+      message = `Pas d'offres entre ${minPrix}€ et ${maxPrix}€`;
+    } else {
+      message = `Liste des offres entre ${minPrix}€ et ${maxPrix}€`;
+    }
+  } else {
+    message = "Veuillez entrer des valeurs valides pour le prix.";
+    offres = await getOffres();
+  }
+} else {
+  // 🔥 données venant de PocketBase
+  offres = await getOffres();
+}
 ---
 
 <Layout titre="Offres">
-    <h1 class="text-3xl font-bold mb-6">Nos offres</h1>
+  <h1 class="text-3xl font-bold mb-6">Nos offres</h1>
 
-    <!-- BOUTONS -->
-    <div class="flex gap-4 mb-8">
-        <!-- Bouton lien vers la route dynamique surface -->
-        <a
-            href="/offres/surface/80"
-            role="button"
-            class="rounded-full px-6 py-3 bg-slate-800 text-white text-center"
-        >
-            Maisons de plus de 80 m²
-        </a>
+  <a
+  href="/offres/add"
+  class="rounded-full px-6 py-3 bg-slate-800 text-white text-center"
+>
+  + Ajouter une offre
+</a>
 
-        <!-- Bouton filtre favoris -->
-        <button
-            id="favori-button"
-            class="rounded-full px-6 py-3 bg-slate-600 text-white"
-        >
-            Afficher les favoris
-        </button>
-    </div>
+  <!-- ✅ FILTRE PRIX (TP) -->
+  <form
+    action="/offres"
+    method="POST"
+    class="mb-6 rounded-2xl bg-white p-4 shadow-sm flex flex-col sm:flex-row gap-3"
+  >
+    <input
+      type="number"
+      name="minPrix"
+      placeholder="Prix minimum"
+      min="0"
+      step="1"
+      class="w-full sm:w-56 p-2 border border-gray-300 rounded-md"
+    />
+    <input
+      type="number"
+      name="maxPrix"
+      placeholder="Prix maximum"
+      min="0"
+      step="1"
+      class="w-full sm:w-56 p-2 border border-gray-300 rounded-md"
+    />
+    <input
+      type="submit"
+      value="Filtrer par prix"
+      class="cursor-pointer rounded-full px-6 py-3 bg-slate-800 text-white text-center"
+    />
+  </form>
 
-    <!-- LISTE DES OFFRES -->
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {offres.map((offre) => <OffreCard offre={offre} />)}
-    </div>
+  {message && (
+    <p class="mb-8 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm">
+      {message}
+    </p>
+  )}
 
-    <!-- SCRIPT FAVORIS -->
-    <script>
-        const button = document.getElementById("favori-button");
-        let showOnlyFavorites = false;
+  <!-- BOUTONS -->
+  <div class="flex gap-4 mb-8">
+    <!-- Bouton lien vers la route dynamique surface -->
+    <a
+      href="/offres/surface/80"
+      role="button"
+      class="rounded-full px-6 py-3 bg-slate-800 text-white text-center"
+    >
+      Maisons de plus de 80 m²
+    </a>
 
-        button?.addEventListener("click", () => {
-            showOnlyFavorites = !showOnlyFavorites;
-            const offres = document.querySelectorAll(".offre");
+    <!-- Bouton filtre favoris -->
+    <button
+      id="favori-button"
+      type="button"
+      class="rounded-full px-6 py-3 bg-slate-600 text-white"
+    >
+      Afficher les favoris
+    </button>
+  </div>
 
-            offres.forEach((offre) => {
-                const isFavori = offre.dataset.favori === "true";
+  <!-- LISTE DES OFFRES -->
+  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {offres.map((offre) => <OffreCard offre={offre} />)}
+  </div>
 
-                if (showOnlyFavorites) {
-                    offre.style.display = isFavori ? "block" : "none";
-                    button.textContent = "Afficher tout";
-                } else {
-                    offre.style.display = "block";
-                    button.textContent = "Afficher les favoris";
-                }
-            });
-        });
-    </script>
+  <!-- SCRIPT FAVORIS -->
+  <script>
+    const button = document.getElementById("favori-button");
+    let showOnlyFavorites = false;
+
+    button?.addEventListener("click", () => {
+      showOnlyFavorites = !showOnlyFavorites;
+      const offres = document.querySelectorAll(".offre");
+
+      offres.forEach((offre) => {
+        const isFavori = offre.dataset.favori === "true";
+
+        if (showOnlyFavorites) {
+          offre.style.display = isFavori ? "block" : "none";
+          button.textContent = "Afficher tout";
+        } else {
+          offre.style.display = "block";
+          button.textContent = "Afficher les favoris";
+        }
+      });
+    });
+  </script>
 </Layout>

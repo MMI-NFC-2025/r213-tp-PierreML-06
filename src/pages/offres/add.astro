@@ -1,0 +1,119 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { addOffre } from "../../js/backend.mjs";
+
+let message = "";
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+
+  // validations simples côté serveur
+  const nomMaison = String(formData.get("nomMaison") ?? "").trim();
+  const prix = Number(formData.get("prix"));
+  const nbSdb = Number(formData.get("nbSdb") || 0);
+  const nbChambres = Number(formData.get("nbChambres") || 0);
+  const surface = Number(formData.get("surface"));
+
+  const prixOk = Number.isFinite(prix) && prix > 0;
+  const surfaceOk = Number.isFinite(surface) && surface > 0;
+  const nbSdbOk = Number.isFinite(nbSdb) && nbSdb >= 0;
+  const nbChambresOk = Number.isFinite(nbChambres) && nbChambres >= 0;
+
+  if (!nomMaison || !prixOk || !surfaceOk || !nbSdbOk || !nbChambresOk) {
+    message =
+      "Veuillez entrer des valeurs valides (nom, prix > 0, surface > 0, nombres ≥ 0).";
+  } else {
+    const response = await addOffre(formData);
+    message = response.message;
+  }
+}
+---
+
+<Layout titre="Ajouter une offre">
+  <section class="max-w-2xl mx-auto">
+    <div class="flex items-end justify-between mb-6">
+      <h1 class="text-3xl font-bold">Ajouter une offre</h1>
+
+      <a href="/offres" class="rounded-full px-5 py-2 bg-slate-800 text-white text-sm">
+        ← Retour aux offres
+      </a>
+    </div>
+
+    {message && (
+      <div class="mb-6 bg-white rounded-2xl shadow-sm p-4">
+        <p class="text-sm">{message}</p>
+      </div>
+    )}
+
+    <form
+      action="/offres/add"
+      method="POST"
+      enctype="multipart/form-data"
+      class="bg-white rounded-2xl shadow-sm p-5 space-y-3"
+    >
+      <input
+        type="text"
+        name="nomMaison"
+        placeholder="Nom de la maison"
+        required
+        class="w-full mt-2 p-2 border border-gray-300 rounded-md"
+      />
+
+      <input
+        type="number"
+        name="prix"
+        placeholder="Prix"
+        min="1"
+        step="1"
+        required
+        class="w-full p-2 border border-gray-300 rounded-md"
+      />
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <input
+          type="number"
+          name="nbSdb"
+          placeholder="Nombre de salles de bain"
+          min="0"
+          step="1"
+          class="w-full p-2 border border-gray-300 rounded-md"
+        />
+        <input
+          type="number"
+          name="nbChambres"
+          placeholder="Nombre de chambres"
+          min="0"
+          step="1"
+          class="w-full p-2 border border-gray-300 rounded-md"
+        />
+      </div>
+
+      <input
+        type="number"
+        name="surface"
+        placeholder="Superficie"
+        min="1"
+        step="1"
+        required
+        class="w-full p-2 border border-gray-300 rounded-md"
+      />
+
+      <!-- IMPORTANT : adapte le name au champ PocketBase.
+           Si ton champ PB s'appelle "images" (array), laisse "images".
+           Si ton champ PB s'appelle "image" (single), remplace par "image". -->
+      <input
+        type="file"
+        name="images"
+        accept="image/*"
+        class="w-full p-2 border border-gray-300 rounded-md bg-white"
+      />
+
+      <button
+        type="submit"
+        class="rounded-full px-6 py-3 bg-slate-800 text-white text-center"
+      >
+        Ajouter
+      </button>
+    </form>
+  </section>
+</Layout>
