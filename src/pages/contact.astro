@@ -1,0 +1,144 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+let submitted = false;
+if (Astro.request.method === "POST") {
+  await Astro.request.formData();
+  submitted = true;
+}
+---
+
+<Layout titre="Contact">
+  <!-- HERO -->
+  <section class="bg-linear-to-br from-slate-900 to-slate-700 text-white py-20 px-6">
+    <div class="max-w-4xl mx-auto text-center">
+      <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-4">Prenez contact</p>
+      <h1 class="text-4xl font-bold mb-4">Contactez-nous</h1>
+      <p class="text-slate-300 text-lg">Notre équipe est disponible du lundi au samedi de 9h à 19h.</p>
+    </div>
+  </section>
+
+  <section class="py-16 px-6 max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+      <!-- FORMULAIRE -->
+      <div>
+        <h2 class="text-2xl font-bold mb-6 text-slate-900">Envoyez-nous un message</h2>
+
+        {submitted ? (
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center">
+            <div class="w-14 h-14 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+            </div>
+            <h3 class="text-lg font-semibold text-emerald-800 mb-2">Message envoyé !</h3>
+            <p class="text-emerald-700 text-sm">Nous vous répondrons dans les plus brefs délais.</p>
+            <a href="/contact" class="inline-block mt-5 rounded-xl px-6 py-2.5 bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition-colors">
+              Envoyer un autre message
+            </a>
+          </div>
+        ) : (
+          <form action="/contact" method="POST" class="bg-white rounded-2xl shadow-sm p-6 space-y-4 border border-gray-100">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Prénom</label>
+                <input type="text" name="prenom" placeholder="Jean" required
+                  class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Nom</label>
+                <input type="text" name="nom" placeholder="Dupont" required
+                  class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+              <input type="email" name="email" placeholder="jean.dupont@email.com" required
+                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Téléphone</label>
+              <input type="tel" name="telephone" placeholder="06 12 34 56 78"
+                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Sujet</label>
+              <select name="sujet" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50">
+                <option value="">Choisir un sujet</option>
+                <option value="achat">Achat immobilier</option>
+                <option value="vente">Vente de bien</option>
+                <option value="location">Location</option>
+                <option value="estimation">Estimation gratuite</option>
+                <option value="autre">Autre demande</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Message</label>
+              <textarea name="message" placeholder="Décrivez votre projet ou votre demande..." rows="5" required
+                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50 resize-none"></textarea>
+            </div>
+            <button type="submit" class="w-full rounded-xl py-3.5 bg-slate-800 text-white font-semibold hover:bg-slate-700 transition-colors">
+              Envoyer le message
+            </button>
+          </form>
+        )}
+      </div>
+
+      <!-- COORDONNÉES -->
+      <div class="space-y-5">
+        <h2 class="text-2xl font-bold mb-6 text-slate-900">Nos coordonnées</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm p-6 border border-gray-100 divide-y divide-gray-100">
+          {[
+            {
+              label: "Adresse",
+              value: "24 Rue des Lilas, 06000 Nice",
+              icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>`,
+              href: null,
+            },
+            {
+              label: "Téléphone",
+              value: "04 82 99 12 45",
+              icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"/>`,
+              href: "tel:0482991245",
+            },
+            {
+              label: "Email",
+              value: "contact@azureaimmo.fr",
+              icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/>`,
+              href: "mailto:contact@azureaimmo.fr",
+            },
+            {
+              label: "Horaires",
+              value: "Lun–Ven 9h–19h · Sam 9h–17h",
+              icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>`,
+              href: null,
+            },
+          ].map(({ label, value, icon, href }) => (
+            <div class="flex items-start gap-4 py-4 first:pt-0 last:pb-0">
+              <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                <svg class="w-4.5 h-4.5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" set:html={icon} />
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
+                {href ? (
+                  <a href={href} class="text-sm text-slate-700 hover:text-slate-900 transition-colors">{value}</a>
+                ) : (
+                  <p class="text-sm text-slate-700">{value}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div class="bg-slate-900 text-white rounded-2xl p-6">
+          <h3 class="font-semibold text-base mb-2">Besoin d'une réponse rapide ?</h3>
+          <p class="text-slate-400 text-sm mb-5 leading-relaxed">Nos agents sont disponibles par téléphone durant les heures d'ouverture.</p>
+          <a href="tel:0482991245" class="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 bg-white text-slate-900 font-medium text-sm hover:bg-slate-100 transition-colors">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"/></svg>
+            Appeler maintenant
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

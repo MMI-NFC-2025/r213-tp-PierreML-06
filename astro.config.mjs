@@ -1,7 +1,6 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
-import vercel from '@astrojs/vercel';
+import netlify from '@astrojs/netlify';
 
 export default defineConfig({
   output: 'server',
@@ -10,5 +9,5 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  adapter: vercel()
+  adapter: netlify()
 });

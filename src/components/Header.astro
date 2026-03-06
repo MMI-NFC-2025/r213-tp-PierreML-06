@@ -24,19 +24,12 @@ import Logo from "../assets/icons/logo.avif";
 
         <!-- Menu desktop -->
         <nav class="hidden md:flex space-x-8 text-gray-700 font-medium">
-            <a href="/" class="hover:text-primary-600 transition">Accueil</a>
-            <a href="/offres" class="hover:text-primary-600 transition"
-                >Offres</a
-            >
-            <a href="/agence" class="hover:text-primary-600 transition"
-                >L’Agence</a
-            >
-            <a href="/services" class="hover:text-primary-600 transition"
-                >Services</a
-            >
-            <a href="/contact" class="hover:text-primary-600 transition"
-                >Contact</a
-            >
+            <a href="/" class="hover:text-slate-900 transition">Accueil</a>
+            <a href="/offres" class="hover:text-slate-900 transition">Offres</a>
+            <a href="/agents" class="hover:text-slate-900 transition">Agents</a>
+            <a href="/agence" class="hover:text-slate-900 transition">L’Agence</a>
+            <a href="/services" class="hover:text-slate-900 transition">Services</a>
+            <a href="/contact" class="hover:text-slate-900 transition">Contact</a>
         </nav>
 
         <!-- Burger button -->
@@ -47,13 +40,13 @@ import Logo from "../assets/icons/logo.avif";
             class="relative w-10 h-10 flex items-center justify-center md:hidden"
         >
             <span
-                class="line absolute w-6 h-[2px] bg-gray-800 rounded transition-all duration-300 ease-in-out -translate-y-2"
+                class="line absolute w-6 h-0.5 bg-gray-800 rounded transition-all duration-300 ease-in-out -translate-y-2"
             ></span>
             <span
-                class="line absolute w-6 h-[2px] bg-gray-800 rounded transition-all duration-300 ease-in-out"
+                class="line absolute w-6 h-0.5 bg-gray-800 rounded transition-all duration-300 ease-in-out"
             ></span>
             <span
-                class="line absolute w-6 h-[2px] bg-gray-800 rounded transition-all duration-300 ease-in-out translate-y-2"
+                class="line absolute w-6 h-0.5 bg-gray-800 rounded transition-all duration-300 ease-in-out translate-y-2"
             ></span>
         </button>
     </div>
@@ -63,51 +56,43 @@ import Logo from "../assets/icons/logo.avif";
         id="menu"
         class="hidden md:hidden flex-col bg-white border-t border-gray-100 px-6 py-4 text-gray-700 font-medium space-y-3 transform transition-all duration-300 opacity-0 -translate-y-5"
     >
-        <a href="/" class="block hover:text-primary-600 transition">Accueil</a>
-        <a href="/offres" class="block hover:text-primary-600 transition"
-            >Offres</a
-        >
-        <a href="/agence" class="block hover:text-primary-600 transition"
-            >L’Agence</a
-        >
-        <a href="/services" class="block hover:text-primary-600 transition"
-            >Services</a
-        >
-        <a href="/contact" class="block hover:text-primary-600 transition"
-            >Contact</a
-        >
+        <a href="/" class="block hover:text-slate-900 transition">Accueil</a>
+        <a href="/offres" class="block hover:text-slate-900 transition">Offres</a>
+        <a href="/agents" class="block hover:text-slate-900 transition">Agents</a>
+        <a href="/agence" class="block hover:text-slate-900 transition">L’Agence</a>
+        <a href="/services" class="block hover:text-slate-900 transition">Services</a>
+        <a href="/contact" class="block hover:text-slate-900 transition">Contact</a>
     </nav>
 
     <script>
         const burger = document.getElementById("burger");
-        const lines = burger.querySelectorAll(".line");
         const menu = document.getElementById("menu");
-        let open = false;
+        if (burger && menu) {
+            const lines = burger.querySelectorAll(".line");
+            let open = false;
 
-        burger.addEventListener("click", () => {
-            open = !open;
-            burger.setAttribute("aria-expanded", open);
+            burger.addEventListener("click", () => {
+                open = !open;
+                burger.setAttribute("aria-expanded", String(open));
 
-            if (open) {
-                lines[0].classList.add("translate-y-0", "rotate-45");
-                lines[1].classList.add("opacity-0");
-                lines[2].classList.add("translate-y-0", "-rotate-45");
-            } else {
-                lines[0].classList.remove("translate-y-0", "rotate-45");
-                lines[1].classList.remove("opacity-0");
-                lines[2].classList.remove("translate-y-0", "-rotate-45");
-            }
+                if (open) {
+                    lines[0].classList.add("translate-y-0", "rotate-45");
+                    lines[1].classList.add("opacity-0");
+                    lines[2].classList.add("translate-y-0", "-rotate-45");
+                } else {
+                    lines[0].classList.remove("translate-y-0", "rotate-45");
+                    lines[1].classList.remove("opacity-0");
+                    lines[2].classList.remove("translate-y-0", "-rotate-45");
+                }
 
-            if (open) {
-                menu.classList.remove("hidden");
-                setTimeout(
-                    () => menu.classList.remove("opacity-0", "-translate-y-5"),
-                    10,
-                );
-            } else {
-                menu.classList.add("opacity-0", "-translate-y-5");
-                setTimeout(() => menu.classList.add("hidden"), 300);
-            }
-        });
+                if (open) {
+                    menu.classList.remove("hidden");
+                    setTimeout(() => menu.classList.remove("opacity-0", "-translate-y-5"), 10);
+                } else {
+                    menu.classList.add("opacity-0", "-translate-y-5");
+                    setTimeout(() => menu.classList.add("hidden"), 300);
+                }
+            });
+        }
     </script>
 </header>

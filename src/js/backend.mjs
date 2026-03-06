@@ -1,7 +1,7 @@
 import PocketBase from "pocketbase";
 
 // URL PB
-const db = new PocketBase("http://127.0.0.1:8090");
+const db = new PocketBase("https://agence.pierre-mouilleseaux-lhuillier.fr");
 
 /**
  * Récupère toutes les maisons de la collection "maison"

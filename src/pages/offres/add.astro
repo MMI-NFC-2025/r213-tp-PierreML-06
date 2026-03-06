@@ -3,11 +3,10 @@ import Layout from "../../layouts/Layout.astro";
 import { addOffre } from "../../js/backend.mjs";
 
 let message = "";
+let success = false;
 
 if (Astro.request.method === "POST") {
   const formData = await Astro.request.formData();
-
-  // validations simples côté serveur
   const nomMaison = String(formData.get("nomMaison") ?? "").trim();
   const prix = Number(formData.get("prix"));
   const nbSdb = Number(formData.get("nbSdb") || 0);
@@ -20,100 +19,112 @@ if (Astro.request.method === "POST") {
   const nbChambresOk = Number.isFinite(nbChambres) && nbChambres >= 0;
 
   if (!nomMaison || !prixOk || !surfaceOk || !nbSdbOk || !nbChambresOk) {
-    message =
-      "Veuillez entrer des valeurs valides (nom, prix > 0, surface > 0, nombres ≥ 0).";
+    message = "Veuillez entrer des valeurs valides (nom, prix > 0, surface > 0, nombres ≥ 0).";
   } else {
     const response = await addOffre(formData);
     message = response.message;
+    success = response.success;
   }
 }
 ---
 
 <Layout titre="Ajouter une offre">
-  <section class="max-w-2xl mx-auto">
-    <div class="flex items-end justify-between mb-6">
-      <h1 class="text-3xl font-bold">Ajouter une offre</h1>
-
-      <a href="/offres" class="rounded-full px-5 py-2 bg-slate-800 text-white text-sm">
-        ← Retour aux offres
+  <!-- PAGE HEADER -->
+  <div class="bg-white border-b border-gray-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Ajouter une offre</h1>
+        <p class="text-gray-400 text-sm mt-0.5">Renseignez les informations du bien immobilier</p>
+      </div>
+      <a href="/offres" class="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 border border-gray-200 text-slate-600 text-sm font-medium hover:bg-gray-50 transition-colors">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+        Retour aux offres
       </a>
     </div>
+  </div>
 
+  <div class="max-w-2xl mx-auto px-6 py-10">
+
+    <!-- MESSAGE -->
     {message && (
-      <div class="mb-6 bg-white rounded-2xl shadow-sm p-4">
-        <p class="text-sm">{message}</p>
+      <div class={`mb-6 rounded-2xl p-4 flex items-start gap-3 border ${success ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-red-50 border-red-200 text-red-800"}`}>
+        {success ? (
+          <svg class="w-5 h-5 shrink-0 mt-0.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        ) : (
+          <svg class="w-5 h-5 shrink-0 mt-0.5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+        )}
+        <p class="text-sm font-medium">{message}</p>
       </div>
     )}
 
-    <form
-      action="/offres/add"
-      method="POST"
-      enctype="multipart/form-data"
-      class="bg-white rounded-2xl shadow-sm p-5 space-y-3"
-    >
-      <input
-        type="text"
-        name="nomMaison"
-        placeholder="Nom de la maison"
-        required
-        class="w-full mt-2 p-2 border border-gray-300 rounded-md"
-      />
+    <form action="/offres/add" method="POST" enctype="multipart/form-data"
+      class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
-      <input
-        type="number"
-        name="prix"
-        placeholder="Prix"
-        min="1"
-        step="1"
-        required
-        class="w-full p-2 border border-gray-300 rounded-md"
-      />
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <input
-          type="number"
-          name="nbSdb"
-          placeholder="Nombre de salles de bain"
-          min="0"
-          step="1"
-          class="w-full p-2 border border-gray-300 rounded-md"
-        />
-        <input
-          type="number"
-          name="nbChambres"
-          placeholder="Nombre de chambres"
-          min="0"
-          step="1"
-          class="w-full p-2 border border-gray-300 rounded-md"
-        />
+      <!-- Informations générales -->
+      <div class="px-6 py-5 border-b border-gray-100">
+        <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Informations générales</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="nomMaison" class="block text-sm font-medium text-gray-700 mb-1.5">
+              Nom du bien <span class="text-red-400">*</span>
+            </label>
+            <input id="nomMaison" type="text" name="nomMaison" placeholder="Ex : Villa Les Oliviers" required
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+          </div>
+          <div>
+            <label for="adresse" class="block text-sm font-medium text-gray-700 mb-1.5">Adresse</label>
+            <input id="adresse" type="text" name="adresse" placeholder="Ex : 12 Rue du Soleil, 06000 Nice"
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+          </div>
+        </div>
       </div>
 
-      <input
-        type="number"
-        name="surface"
-        placeholder="Superficie"
-        min="1"
-        step="1"
-        required
-        class="w-full p-2 border border-gray-300 rounded-md"
-      />
+      <!-- Chiffres clés -->
+      <div class="px-6 py-5 border-b border-gray-100">
+        <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Chiffres clés</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="prix" class="block text-sm font-medium text-gray-700 mb-1.5">Prix (€) <span class="text-red-400">*</span></label>
+            <input id="prix" type="number" name="prix" placeholder="Ex : 350 000" min="1" step="1" required
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+          </div>
+          <div>
+            <label for="surface" class="block text-sm font-medium text-gray-700 mb-1.5">Surface (m²) <span class="text-red-400">*</span></label>
+            <input id="surface" type="number" name="surface" placeholder="Ex : 120" min="1" step="1" required
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+          </div>
+          <div>
+            <label for="nbChambres" class="block text-sm font-medium text-gray-700 mb-1.5">Chambres</label>
+            <input id="nbChambres" type="number" name="nbChambres" placeholder="Ex : 3" min="0" step="1"
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+          </div>
+          <div>
+            <label for="nbSdb" class="block text-sm font-medium text-gray-700 mb-1.5">Salles de bain</label>
+            <input id="nbSdb" type="number" name="nbSdb" placeholder="Ex : 2" min="0" step="1"
+              class="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+          </div>
+        </div>
+      </div>
 
-      <!-- IMPORTANT : adapte le name au champ PocketBase.
-           Si ton champ PB s'appelle "images" (array), laisse "images".
-           Si ton champ PB s'appelle "image" (single), remplace par "image". -->
-      <input
-        type="file"
-        name="images"
-        accept="image/*"
-        class="w-full p-2 border border-gray-300 rounded-md bg-white"
-      />
+      <!-- Photo -->
+      <div class="px-6 py-5 border-b border-gray-100">
+        <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Photo</h2>
+        <label for="images" class="flex flex-col items-center justify-center gap-3 w-full h-32 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer hover:border-slate-300 hover:bg-gray-50 transition-colors">
+          <svg class="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
+          <span class="text-sm text-gray-400">Cliquez pour ajouter une photo</span>
+          <span class="text-xs text-gray-300">JPG · PNG · WEBP</span>
+        </label>
+        <input id="images" type="file" name="images" accept="image/*" class="hidden" />
+      </div>
 
-      <button
-        type="submit"
-        class="rounded-full px-6 py-3 bg-slate-800 text-white text-center"
-      >
-        Ajouter
-      </button>
+      <!-- Submit -->
+      <div class="px-6 py-5 bg-gray-50 flex items-center justify-between gap-4">
+        <p class="text-xs text-gray-400">* Champs obligatoires</p>
+        <button type="submit" class="inline-flex items-center gap-2 rounded-xl px-6 py-3 bg-slate-800 text-white font-semibold hover:bg-slate-700 transition-colors">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          Publier l'offre
+        </button>
+      </div>
     </form>
-  </section>
+  </div>
 </Layout>

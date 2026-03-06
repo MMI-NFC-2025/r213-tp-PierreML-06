@@ -9,58 +9,146 @@ if (!offre) {
     throw new Error("Offre introuvable");
 }
 
-const { nomMaison, adresse, surface, prix, favori = false } = offre;
+const { nomMaison, adresse, surface, prix, favori = false, nbChambres, nbSdb } = offre;
+const imageUrl = getImageUrl(offre, offre.images?.[0]);
 ---
 
 <Layout titre={nomMaison}>
-    <!-- Bouton retour -->
-    <a
-        href="/offres"
-        class="inline-block mb-6 text-sm text-blue-500 hover:underline"
-    >
-        ← Retour aux offres
-    </a>
-
-    <!-- IMAGE HERO -->
-    <div class="w-full h-[380px] overflow-hidden rounded-3xl mb-8">
-        <img
-            src={getImageUrl(offre, offre.images?.[0])}
-            alt={nomMaison}
-            class="w-full h-full object-cover"
-        />
+  <!-- BREADCRUMB -->
+  <div class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex items-center gap-2 text-sm text-gray-400">
+      <a href="/" class="hover:text-slate-700 transition-colors">Accueil</a>
+      <span>/</span>
+      <a href="/offres" class="hover:text-slate-700 transition-colors">Offres</a>
+      <span>/</span>
+      <span class="text-slate-700 font-medium truncate">{nomMaison}</span>
     </div>
+  </div>
 
-    <!-- TITRE + FAVORI -->
-    <div class="flex items-center gap-4 mb-6">
-        <h1 class="text-3xl font-bold">{nomMaison}</h1>
-
-        {
-            favori && (
-                <span
-                    class="bg-amber-400 text-black px-4 py-1 rounded-full
-                       text-sm font-semibold"
-                >
-                    ★ Favori
-                </span>
-            )
-        }
+  <!-- IMAGE HERO -->
+  {imageUrl ? (
+    <div class="w-full h-105 overflow-hidden bg-slate-200">
+      <img src={imageUrl} alt={nomMaison} class="w-full h-full object-cover" />
     </div>
-
-    <!-- INFOS -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 max-w-3xl">
-        <ul class="space-y-4 text-gray-700">
-            <li>
-                <strong>Adresse :</strong>
-                {adresse}
-            </li>
-            <li>
-                <strong>Surface :</strong>
-                {surface} m²
-            </li>
-            <li>
-                <strong>Prix :</strong>
-                <span class="text-lg font-bold ml-2">{prix} €</span>
-            </li>
-        </ul>
+  ) : (
+    <div class="w-full h-64 bg-slate-200 flex items-center justify-center">
+      <span class="text-6xl">🏠</span>
     </div>
+  )}
+
+  <!-- CONTENU -->
+  <div class="max-w-7xl mx-auto px-6 py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <!-- COLONNE PRINCIPALE -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- Titre + badges -->
+        <div>
+          <div class="flex items-start gap-3 flex-wrap mb-2">
+            <h1 class="text-3xl font-bold text-slate-900">{nomMaison}</h1>
+            {favori && (
+              <span class="mt-1 bg-amber-400 text-black px-3 py-1 rounded-xl text-xs font-bold">
+                ★ Favori
+              </span>
+            )}
+          </div>
+          {adresse && (
+            <p class="text-gray-400 flex items-center gap-1.5">
+              <span>📍</span><span>{adresse}</span>
+            </p>
+          )}
+        </div>
+
+        <!-- Stats visuelles -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {surface && (
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
+              <p class="text-3xl font-bold text-slate-800">{surface}</p>
+              <p class="text-xs text-gray-400 mt-1">m² habitables</p>
+            </div>
+          )}
+          {nbChambres != null && nbChambres > 0 && (
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
+              <p class="text-3xl font-bold text-slate-800">{nbChambres}</p>
+              <p class="text-xs text-gray-400 mt-1">chambre(s)</p>
+            </div>
+          )}
+          {nbSdb != null && nbSdb > 0 && (
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
+              <p class="text-3xl font-bold text-slate-800">{nbSdb}</p>
+              <p class="text-xs text-gray-400 mt-1">salle(s) de bain</p>
+            </div>
+          )}
+        </div>
+
+        <!-- Fiche détaillée -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+          <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">
+            Détails du bien
+          </h2>
+          <ul class="divide-y divide-gray-100 text-sm">
+            <li class="flex justify-between py-3">
+              <span class="text-gray-500">Nom</span>
+              <span class="font-medium text-slate-800">{nomMaison}</span>
+            </li>
+            {adresse && (
+              <li class="flex justify-between py-3">
+                <span class="text-gray-500">Adresse</span>
+                <span class="font-medium text-slate-800 text-right max-w-xs">{adresse}</span>
+              </li>
+            )}
+            {surface && (
+              <li class="flex justify-between py-3">
+                <span class="text-gray-500">Surface</span>
+                <span class="font-medium text-slate-800">{surface} m²</span>
+              </li>
+            )}
+            {nbChambres != null && (
+              <li class="flex justify-between py-3">
+                <span class="text-gray-500">Chambres</span>
+                <span class="font-medium text-slate-800">{nbChambres}</span>
+              </li>
+            )}
+            {nbSdb != null && (
+              <li class="flex justify-between py-3">
+                <span class="text-gray-500">Salles de bain</span>
+                <span class="font-medium text-slate-800">{nbSdb}</span>
+              </li>
+            )}
+            <li class="flex justify-between py-3">
+              <span class="text-gray-500">Favori</span>
+              <span class="font-medium text-slate-800">{favori ? "Oui ★" : "Non"}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SIDEBAR PRIX + CTA -->
+      <div class="space-y-4">
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sticky top-24">
+          {prix && (
+            <div class="mb-6 pb-6 border-b border-gray-100">
+              <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Prix</p>
+              <p class="text-4xl font-bold text-slate-900">
+                {prix.toLocaleString("fr-FR")} <span class="text-2xl font-medium">€</span>
+              </p>
+            </div>
+          )}
+          <a
+            href="/contact"
+            class="flex items-center justify-center gap-2 w-full rounded-xl py-3.5 bg-slate-800 text-white font-semibold hover:bg-slate-700 transition-colors mb-3"
+          >
+            Contacter un agent
+          </a>
+          <a
+            href="/offres"
+            class="flex items-center justify-center gap-2 w-full rounded-xl py-3 border border-gray-200 text-slate-600 text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            ← Retour aux offres
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 </Layout>

@@ -8,125 +8,178 @@ let offres = [];
 
 if (Astro.request.method === "POST") {
   const data = await Astro.request.formData();
-
-  const minPrixRaw = data.get("minPrix");
-  const maxPrixRaw = data.get("maxPrix");
-
-  const minPrix = Number(minPrixRaw);
-  const maxPrix = Number(maxPrixRaw);
-
+  const minPrix = Number(data.get("minPrix"));
+  const maxPrix = Number(data.get("maxPrix"));
   const minOk = Number.isFinite(minPrix) && minPrix > 0;
   const maxOk = Number.isFinite(maxPrix) && maxPrix > 0;
 
   if (minOk && maxOk && maxPrix > minPrix) {
     offres = await filterByPrix(minPrix, maxPrix);
-
-    if (offres.length === 0) {
-      message = `Pas d'offres entre ${minPrix}€ et ${maxPrix}€`;
-    } else {
-      message = `Liste des offres entre ${minPrix}€ et ${maxPrix}€`;
-    }
+    message = offres.length === 0
+      ? `Aucune offre entre ${minPrix.toLocaleString("fr-FR")} € et ${maxPrix.toLocaleString("fr-FR")} €`
+      : `${offres.length} offre(s) entre ${minPrix.toLocaleString("fr-FR")} € et ${maxPrix.toLocaleString("fr-FR")} €`;
   } else {
     message = "Veuillez entrer des valeurs valides pour le prix.";
     offres = await getOffres();
   }
 } else {
-  // 🔥 données venant de PocketBase
   offres = await getOffres();
 }
+
+const favCount = offres.filter((o) => o.favori).length;
 ---
 
-<Layout titre="Offres">
-  <h1 class="text-3xl font-bold mb-6">Nos offres</h1>
-
-  <a
-  href="/offres/add"
-  class="rounded-full px-6 py-3 bg-slate-800 text-white text-center"
->
-  + Ajouter une offre
-</a>
-
-  <!-- ✅ FILTRE PRIX (TP) -->
-  <form
-    action="/offres"
-    method="POST"
-    class="mb-6 rounded-2xl bg-white p-4 shadow-sm flex flex-col sm:flex-row gap-3"
-  >
-    <input
-      type="number"
-      name="minPrix"
-      placeholder="Prix minimum"
-      min="0"
-      step="1"
-      class="w-full sm:w-56 p-2 border border-gray-300 rounded-md"
-    />
-    <input
-      type="number"
-      name="maxPrix"
-      placeholder="Prix maximum"
-      min="0"
-      step="1"
-      class="w-full sm:w-56 p-2 border border-gray-300 rounded-md"
-    />
-    <input
-      type="submit"
-      value="Filtrer par prix"
-      class="cursor-pointer rounded-full px-6 py-3 bg-slate-800 text-white text-center"
-    />
-  </form>
-
-  {message && (
-    <p class="mb-8 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm shadow-sm">
-      {message}
-    </p>
-  )}
-
-  <!-- BOUTONS -->
-  <div class="flex gap-4 mb-8">
-    <!-- Bouton lien vers la route dynamique surface -->
-    <a
-      href="/offres/surface/80"
-      role="button"
-      class="rounded-full px-6 py-3 bg-slate-800 text-white text-center"
-    >
-      Maisons de plus de 80 m²
-    </a>
-
-    <!-- Bouton filtre favoris -->
-    <button
-      id="favori-button"
-      type="button"
-      class="rounded-full px-6 py-3 bg-slate-600 text-white"
-    >
-      Afficher les favoris
-    </button>
+<Layout titre="Nos offres">
+  <!-- PAGE HEADER -->
+  <div class="bg-white border-b border-gray-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <div class="flex items-start justify-between flex-wrap gap-4">
+        <div>
+          <h1 class="text-3xl font-bold text-slate-900">Nos offres</h1>
+          <div class="flex items-center gap-4 mt-1.5">
+            <p class="text-gray-400 text-sm">{offres.length} bien(s) disponible(s)</p>
+            <span id="fav-count-display" class={`text-sm font-medium ${favCount > 0 ? "text-amber-600" : "text-gray-300"}`}>
+              {favCount > 0 ? `${favCount} favori(s)` : "0 favori"}
+            </span>
+          </div>
+        </div>
+        <a
+          href="/offres/add"
+          class="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 bg-slate-800 text-white text-sm font-medium hover:bg-slate-700 transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+          Ajouter une offre
+        </a>
+      </div>
+    </div>
   </div>
 
-  <!-- LISTE DES OFFRES -->
-  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-    {offres.map((offre) => <OffreCard offre={offre} />)}
+  <div class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- FILTRES -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-8">
+      <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Filtres &amp; Recherche</h2>
+
+      <!-- Recherche par nom -->
+      <div class="mb-5">
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Recherche par nom</label>
+        <div class="relative">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input
+            id="search-input"
+            type="search"
+            placeholder="Ex : Villa Les Pins..."
+            class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50 transition"
+          />
+        </div>
+        <p id="search-count" class="text-xs text-gray-400 mt-1.5 hidden"></p>
+      </div>
+
+      <!-- Filtre prix -->
+      <form action="/offres" method="POST">
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Filtrer par prix</label>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input type="number" name="minPrix" placeholder="Prix minimum (€)" min="0" step="1"
+            class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+          <input type="number" name="maxPrix" placeholder="Prix maximum (€)" min="0" step="1"
+            class="flex-1 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-slate-300 bg-gray-50" />
+          <button type="submit"
+            class="px-6 py-2.5 bg-slate-800 text-white rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors whitespace-nowrap">
+            Filtrer
+          </button>
+        </div>
+      </form>
+
+      <!-- Raccourcis -->
+      <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
+        <a href="/offres/surface/80"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-slate-700 text-xs font-medium hover:bg-gray-50 hover:border-slate-300 transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>
+          Plus de 80 m²
+        </a>
+        <button id="favori-button" type="button"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-slate-700 text-xs font-medium hover:bg-gray-50 hover:border-slate-300 transition-colors">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Mes favoris
+        </button>
+      </div>
+    </div>
+
+    <!-- MESSAGE FILTRE -->
+    {message && (
+      <div class="mb-6 flex items-center gap-3 bg-white rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 shadow-sm">
+        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4m0-4h.01"/></svg>
+        {message}
+      </div>
+    )}
+
+    <!-- GRILLE -->
+    <div id="offres-grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {offres.map((offre) => (
+        <div class="offre-wrapper" data-nom={(offre.nomMaison ?? "").toLowerCase()}>
+          <OffreCard offre={offre} />
+        </div>
+      ))}
+    </div>
+
+    <p id="no-results" class="hidden text-center text-gray-400 py-16 text-sm">Aucune offre ne correspond à votre recherche.</p>
+
+    {offres.length === 0 && !message && (
+      <div class="text-center py-16">
+        <svg class="w-12 h-12 text-gray-200 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>
+        <p class="text-gray-400 text-sm">Aucune offre disponible pour le moment.</p>
+      </div>
+    )}
   </div>
+
+  <!-- SCRIPT RECHERCHE -->
+  <script>
+    const searchInput = document.getElementById("search-input") as HTMLInputElement | null;
+    const noResults = document.getElementById("no-results");
+    const searchCount = document.getElementById("search-count");
+
+    searchInput?.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase().trim();
+      const wrappers = document.querySelectorAll<HTMLElement>(".offre-wrapper");
+      let visible = 0;
+      wrappers.forEach((w) => {
+        const match = (w.dataset.nom ?? "").includes(query);
+        w.style.display = match ? "" : "none";
+        if (match) visible++;
+      });
+      if (noResults) noResults.classList.toggle("hidden", visible > 0 || query === "");
+      if (searchCount) {
+        searchCount.textContent = query ? `${visible} résultat(s) pour "${searchInput.value}"` : "";
+        searchCount.classList.toggle("hidden", !query);
+      }
+    });
+  </script>
 
   <!-- SCRIPT FAVORIS -->
   <script>
-    const button = document.getElementById("favori-button");
-    let showOnlyFavorites = false;
+    const favBtn = document.getElementById("favori-button");
+    const favDisplay = document.getElementById("fav-count-display");
+    let showOnlyFav = false;
 
-    button?.addEventListener("click", () => {
-      showOnlyFavorites = !showOnlyFavorites;
-      const offres = document.querySelectorAll(".offre");
+    function updateFavDisplay() {
+      const count = document.querySelectorAll('.offre[data-favori="true"]').length;
+      if (favDisplay) {
+        favDisplay.textContent = count > 0 ? `${count} favori(s)` : "0 favori";
+        favDisplay.className = `text-sm font-medium ${count > 0 ? "text-amber-600" : "text-gray-300"}`;
+      }
+    }
 
-      offres.forEach((offre) => {
-        const isFavori = offre.dataset.favori === "true";
-
-        if (showOnlyFavorites) {
-          offre.style.display = isFavori ? "block" : "none";
-          button.textContent = "Afficher tout";
-        } else {
-          offre.style.display = "block";
-          button.textContent = "Afficher les favoris";
-        }
+    favBtn?.addEventListener("click", () => {
+      showOnlyFav = !showOnlyFav;
+      document.querySelectorAll<HTMLElement>(".offre").forEach((offre) => {
+        const isFav = offre.dataset.favori === "true";
+        offre.style.display = showOnlyFav ? (isFav ? "block" : "none") : "block";
       });
+      if (favBtn) {
+        favBtn.textContent = showOnlyFav ? "Afficher tout" : "Mes favoris";
+      }
     });
+
+    window.addEventListener("favori-changed", updateFavDisplay);
   </script>
 </Layout>
