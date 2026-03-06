@@ -18,13 +18,13 @@ const colors = [
 <Layout titre="Nos agents">
   <!-- PAGE HEADER -->
   <div class="bg-white border-b border-gray-100 shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 py-8">
-      <h1 class="text-3xl font-bold text-slate-900">Nos agents</h1>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-900">Nos agents</h1>
       <p class="text-gray-400 text-sm mt-1">{agents.length} agent(s) dans notre équipe</p>
     </div>
   </div>
 
-  <div class="max-w-7xl mx-auto px-6 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
     {agents.length > 0 ? (
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {agents.map((agent, i) => {

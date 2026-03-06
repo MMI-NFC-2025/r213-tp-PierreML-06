@@ -35,21 +35,21 @@ const faqs = [
 
 <Layout titre="Accueil">
   <!-- HERO -->
-  <section class="bg-linear-to-br from-slate-900 to-slate-700 text-white pt-20 pb-28 px-6">
+  <section class="bg-linear-to-br from-slate-900 to-slate-700 text-white pt-16 pb-20 sm:pt-20 sm:pb-28 px-4 sm:px-6">
     <div class="max-w-4xl mx-auto text-center">
-      <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-5">Agence immobilière — Côte d'Azur</p>
-      <h1 class="text-5xl sm:text-6xl font-bold mb-6 leading-tight">
+      <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-4 sm:mb-5">Agence immobilière — Côte d'Azur</p>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-5 sm:mb-6 leading-tight">
         Trouvez le bien<br />immobilier de vos rêves
       </h1>
-      <p class="text-lg text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+      <p class="text-base sm:text-lg text-slate-300 mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed">
         Azuréa Immo vous accompagne dans tous vos projets immobiliers sur la Côte d'Azur.
         Achat, vente, location — nos experts sont à votre service.
       </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/offres" class="rounded-xl px-8 py-4 bg-white text-slate-800 font-semibold hover:bg-slate-100 transition-colors">
+      <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+        <a href="/offres" class="rounded-xl px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-slate-800 font-semibold hover:bg-slate-100 transition-colors">
           Voir les offres
         </a>
-        <a href="/contact" class="rounded-xl px-8 py-4 border border-white/20 text-white font-semibold hover:bg-white/10 transition-colors">
+        <a href="/contact" class="rounded-xl px-6 sm:px-8 py-3.5 sm:py-4 border border-white/20 text-white font-semibold hover:bg-white/10 transition-colors">
           Nous contacter
         </a>
       </div>
@@ -57,34 +57,34 @@ const faqs = [
   </section>
 
   <!-- STATS ANIMÉES -->
-  <section class="bg-white border-b border-gray-100 py-14 px-6">
-    <div class="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+  <section class="bg-white border-b border-gray-100 py-10 sm:py-14 px-4 sm:px-6">
+    <div class="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-center">
       <div>
-        <p class="text-4xl font-bold text-slate-900" data-counter data-target={offres.length} data-suffix="+">{offres.length}+</p>
-        <p class="text-gray-400 mt-1.5 text-sm">Biens disponibles</p>
+        <p class="text-3xl sm:text-4xl font-bold text-slate-900" data-counter data-target={offres.length} data-suffix="+">{offres.length}+</p>
+        <p class="text-gray-400 mt-1.5 text-xs sm:text-sm">Biens disponibles</p>
       </div>
       <div>
-        <p class="text-4xl font-bold text-slate-900" data-counter data-target={agents.length} data-suffix="">{agents.length}</p>
-        <p class="text-gray-400 mt-1.5 text-sm">Agents experts</p>
+        <p class="text-3xl sm:text-4xl font-bold text-slate-900" data-counter data-target={agents.length} data-suffix="">{agents.length}</p>
+        <p class="text-gray-400 mt-1.5 text-xs sm:text-sm">Agents experts</p>
       </div>
       <div>
-        <p class="text-4xl font-bold text-slate-900" data-counter data-target="500" data-suffix="+">{favCount > 0 ? favCount : "500"}+</p>
-        <p class="text-gray-400 mt-1.5 text-sm">Transactions réalisées</p>
+        <p class="text-3xl sm:text-4xl font-bold text-slate-900" data-counter data-target="500" data-suffix="+">{favCount > 0 ? favCount : "500"}+</p>
+        <p class="text-gray-400 mt-1.5 text-xs sm:text-sm">Transactions réalisées</p>
       </div>
       <div>
-        <p class="text-4xl font-bold text-slate-900" data-counter data-target="98" data-suffix="%">98%</p>
-        <p class="text-gray-400 mt-1.5 text-sm">Clients satisfaits</p>
+        <p class="text-3xl sm:text-4xl font-bold text-slate-900" data-counter data-target="98" data-suffix="%">98%</p>
+        <p class="text-gray-400 mt-1.5 text-xs sm:text-sm">Clients satisfaits</p>
       </div>
     </div>
   </section>
 
   <!-- CAROUSEL OFFRES RÉCENTES -->
   {recentOffres.length > 0 && (
-    <section class="py-16 px-6">
+    <section class="py-10 sm:py-16 px-4 sm:px-6">
       <div class="max-w-7xl mx-auto">
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center justify-between mb-6 sm:mb-8">
           <div>
-            <h2 class="text-3xl font-bold text-slate-900">Dernières offres</h2>
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Dernières offres</h2>
             <p class="text-gray-400 text-sm mt-1">{offres.length} bien(s) au total</p>
           </div>
           <div class="flex items-center gap-3">
@@ -100,7 +100,7 @@ const faqs = [
 
         <div id="carousel" class="overflow-x-auto scrollbar-hide flex gap-5 pb-2" style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
           {recentOffres.map((offre) => (
-            <div class="min-w-72 sm:min-w-80 shrink-0" style="scroll-snap-align: start;">
+            <div class="min-w-[80vw] sm:min-w-80 shrink-0" style="scroll-snap-align: start;">
               <OffreCard offre={offre} />
             </div>
           ))}
@@ -114,10 +114,10 @@ const faqs = [
   )}
 
   <!-- SERVICES -->
-  <section class="bg-slate-50 py-16 px-6">
+  <section class="bg-slate-50 py-10 sm:py-16 px-4 sm:px-6">
     <div class="max-w-5xl mx-auto">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-slate-900">Nos services</h2>
+      <div class="text-center mb-8 sm:mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Nos services</h2>
         <p class="text-gray-400 mt-2 text-sm">Un accompagnement complet à chaque étape de votre projet</p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -153,17 +153,17 @@ const faqs = [
   </section>
 
   <!-- FAQ -->
-  <section class="py-16 px-6">
+  <section class="py-10 sm:py-16 px-4 sm:px-6">
     <div class="max-w-3xl mx-auto">
-      <div class="text-center mb-10">
-        <h2 class="text-3xl font-bold text-slate-900">Questions fréquentes</h2>
+      <div class="text-center mb-8 sm:mb-10">
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Questions fréquentes</h2>
         <p class="text-gray-400 mt-2 text-sm">Tout ce que vous devez savoir avant de démarrer votre projet</p>
       </div>
       <div id="faq-list" class="space-y-3">
         {faqs.map((faq, i) => (
           <div class="faq-item bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <button
-              class="faq-btn w-full text-left px-6 py-4 flex items-center justify-between gap-4 font-medium text-slate-800 hover:bg-gray-50 transition-colors"
+              class="faq-btn w-full text-left px-4 sm:px-6 py-4 flex items-center justify-between gap-3 sm:gap-4 font-medium text-slate-800 hover:bg-gray-50 transition-colors text-sm sm:text-base"
               data-index={i}
             >
               <span>{faq.q}</span>
@@ -172,7 +172,7 @@ const faqs = [
               </svg>
             </button>
             <div class="faq-body" style="display:none; overflow:hidden;">
-              <p class="px-6 pb-5 text-gray-500 text-sm leading-relaxed">{faq.a}</p>
+              <p class="px-4 sm:px-6 pb-5 text-gray-500 text-sm leading-relaxed">{faq.a}</p>
             </div>
           </div>
         ))}
@@ -181,10 +181,10 @@ const faqs = [
   </section>
 
   <!-- CTA FINAL -->
-  <section class="bg-slate-900 text-white py-20 px-6 text-center">
+  <section class="bg-slate-900 text-white py-14 sm:py-20 px-4 sm:px-6 text-center">
     <div class="max-w-2xl mx-auto">
-      <h2 class="text-3xl font-bold mb-4">Prêt à concrétiser votre projet ?</h2>
-      <p class="text-slate-400 mb-10 leading-relaxed">
+      <h2 class="text-2xl sm:text-3xl font-bold mb-4">Prêt à concrétiser votre projet ?</h2>
+      <p class="text-slate-400 mb-8 sm:mb-10 leading-relaxed">
         Nos agents sont disponibles du lundi au samedi pour vous accompagner, répondre à vos questions et vous guider vers la meilleure décision.
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">

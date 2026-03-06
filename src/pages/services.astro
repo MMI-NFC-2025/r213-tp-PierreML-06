@@ -4,19 +4,19 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout titre="Services">
   <!-- HERO -->
-  <section class="bg-linear-to-br from-slate-900 to-slate-700 text-white py-20 px-6">
+  <section class="bg-linear-to-br from-slate-900 to-slate-700 text-white py-14 sm:py-20 px-4 sm:px-6">
     <div class="max-w-4xl mx-auto text-center">
       <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-4">Ce que nous faisons</p>
-      <h1 class="text-4xl font-bold mb-4">Nos services</h1>
-      <p class="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">
+      <h1 class="text-3xl sm:text-4xl font-bold mb-4">Nos services</h1>
+      <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
         Une gamme complète de services immobiliers pour vous accompagner à chaque étape de votre projet.
       </p>
     </div>
   </section>
 
   <!-- SERVICES PRINCIPAUX -->
-  <section class="py-16 px-6 max-w-6xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <section class="py-10 sm:py-16 px-4 sm:px-6 max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8">
 
       <!-- Achat -->
       <div class="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
@@ -97,9 +97,9 @@ import Layout from "../layouts/Layout.astro";
   </section>
 
   <!-- SERVICES COMPLÉMENTAIRES -->
-  <section class="bg-slate-50 py-16 px-6">
+  <section class="bg-slate-50 py-10 sm:py-16 px-4 sm:px-6">
     <div class="max-w-5xl mx-auto">
-      <h2 class="text-3xl font-bold text-center mb-10 text-slate-900">Services complémentaires</h2>
+      <h2 class="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-10 text-slate-900">Services complémentaires</h2>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
         {[
           {
@@ -131,9 +131,9 @@ import Layout from "../layouts/Layout.astro";
   </section>
 
   <!-- CTA -->
-  <section class="py-16 px-6 text-center">
+  <section class="py-12 sm:py-16 px-4 sm:px-6 text-center">
     <div class="max-w-2xl mx-auto">
-      <h2 class="text-3xl font-bold mb-4 text-slate-900">Prêt à démarrer votre projet ?</h2>
+      <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-slate-900">Prêt à démarrer votre projet ?</h2>
       <p class="text-gray-400 mb-8 text-sm leading-relaxed">Contactez-nous pour en savoir plus sur nos services et obtenir un accompagnement personnalisé.</p>
       <div class="flex gap-4 justify-center flex-wrap">
         <a href="/contact" class="rounded-xl px-8 py-4 bg-slate-800 text-white font-semibold hover:bg-slate-700 transition-colors">
