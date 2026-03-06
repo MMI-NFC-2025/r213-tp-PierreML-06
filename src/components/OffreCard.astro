@@ -1,46 +1,111 @@
 ---
 import PbImage from "./PbImage.astro";
+import { Image } from "astro:assets";
+
+import favorite from "../assets/icons/favorite.png";
+import favoriteFilled from "../assets/icons/favorite_filled.png";
 
 const { offre } = Astro.props;
-
 const { nomMaison, favori = false } = offre;
 ---
 
 <article
-    class="offre bg-white rounded-2xl shadow-sm overflow-hidden
-           flex flex-col max-w-[500px] w-full mx-auto"
-    data-favori={favori ? "true" : "false"}
+  class="offre relative bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col max-w-[500px] w-full mx-auto"
+  data-favori={favori ? "true" : "false"}
 >
-    <!-- IMAGE -->
-    <a href={`/offres/${offre.id}`} class="block h-52 overflow-hidden">
-        <PbImage
-            record={offre}
-            recordImage={offre.images?.[0]}
-            width={500}
-            height={300}
-        />
-    </a>
+  <a href={`/offres/${offre.id}`} class="block h-52 overflow-hidden">
+    <PbImage
+      record={offre}
+      recordImage={offre.images?.[0]}
+      width={500}
+      height={300}
+    />
+  </a>
 
-    <!-- TITRE -->
-    <div class="p-5">
-        <h2 class="font-semibold text-lg leading-snug">
-            <a href={`/offres/${offre.id}`} class="hover:underline">
-                {nomMaison}
-            </a>
-        </h2>
-    </div>
+  <button
+    class="favoriteButton absolute bottom-3 left-3 p-2 bg-white/90 rounded-full shadow hover:scale-105 transition"
+    data-offre={JSON.stringify(offre)}
+    data-empty={favorite.src}
+    data-filled={favoriteFilled.src}
+    type="button"
+    aria-label="Ajouter aux favoris"
+  >
+    <Image
+      class="favorite-icon"
+      src={favori ? favoriteFilled : favorite}
+      alt="Favorite Icon"
+      width={24}
+      height={24}
+    />
+  </button>
 
-    <!-- BADGE FAVORI EN BAS -->
-    {
-        favori && (
-            <div class="px-5 pb-5 mt-auto">
-                <span
-                    class="inline-block bg-amber-400 text-black
-                       px-4 py-1 rounded-full text-sm font-semibold shadow"
-                >
-                    ★ Favori
-                </span>
-            </div>
-        )
-    }
+  <div class="p-5">
+    <h2 class="font-semibold text-lg leading-snug">
+      <a href={`/offres/${offre.id}`} class="hover:underline">
+        {nomMaison}
+      </a>
+    </h2>
+  </div>
+
+  {
+    favori && (
+      <div class="favorite-badge px-5 pb-5 mt-auto">
+        <span class="inline-block bg-amber-400 text-black px-4 py-1 rounded-full text-sm font-semibold shadow">
+          ★ Favori
+        </span>
+      </div>
+    )
+  }
 </article>
+
+<script>
+  //@ts-nocheck
+  import { setFavori } from "../js/backend.mjs";
+
+  const favoriteButtons = document.querySelectorAll(".favoriteButton");
+
+  favoriteButtons.forEach((button) => {
+    if (button.dataset.bound === "true") return;
+    button.dataset.bound = "true";
+
+    button.addEventListener("click", async () => {
+      const offreData = JSON.parse(button.dataset.offre || "{}");
+      const newFavori = !offreData.favori;
+
+      await setFavori(offreData);
+
+      const favIcon = button.querySelector(".favorite-icon");
+      const empty = button.dataset.empty;
+      const filled = button.dataset.filled;
+
+      if (favIcon) {
+        favIcon.src = newFavori ? filled : empty;
+      }
+
+      const article = button.closest(".offre");
+      const badge = article?.querySelector(".favorite-badge");
+
+      if (newFavori) {
+        if (!badge && article) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "favorite-badge px-5 pb-5 mt-auto";
+          wrapper.innerHTML = `
+            <span class="inline-block bg-amber-400 text-black px-4 py-1 rounded-full text-sm font-semibold shadow">
+              ★ Favori
+            </span>
+          `;
+          article.appendChild(wrapper);
+        }
+      } else {
+        badge?.remove();
+      }
+
+      offreData.favori = newFavori;
+      button.dataset.offre = JSON.stringify(offreData);
+
+      if (article) {
+        article.dataset.favori = newFavori ? "true" : "false";
+      }
+    });
+  });
+</script>

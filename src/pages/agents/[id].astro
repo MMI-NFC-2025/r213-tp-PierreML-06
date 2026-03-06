@@ -5,23 +5,15 @@ import { getAgents, getOffres } from "../../js/backend.mjs";
 
 const { id } = Astro.params;
 
-// récupérer tous les agents
 const agents = await getAgents();
-
-// trouver l'agent courant
 const agent = agents.find((a) => a.id === id);
 
-// récupérer toutes les maisons
 const allOffres = await getOffres();
-
-// ids des maisons liées à cet agent
-const linkedOffresIds = agent?.offres || [];
-
-// filtrer seulement les maisons liées
+const linkedOffresIds = agent?.offres ?? [];
 const offres = allOffres.filter((offre) => linkedOffresIds.includes(offre.id));
 ---
 
-<Layout title={`Maisons de ${agent?.prenom} ${agent?.nom}`}>
+<Layout title={`Maisons de ${agent?.prenom ?? ""} ${agent?.nom ?? ""}`}>
   <section class="max-w-7xl mx-auto px-6 py-12">
     <a href="/agents" class="text-blue-600 hover:underline mb-6 inline-block">
       ← Retour aux agents
@@ -35,16 +27,14 @@ const offres = allOffres.filter((offre) => linkedOffresIds.includes(offre.id));
       {offres.length} maison(s) liée(s)
     </p>
 
-    {
-      offres.length > 0 ? (
-        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {offres.map((offre) => (
-            <OffreCard offre={offre} />
-          ))}
-        </div>
-      ) : (
-        <p class="text-gray-500">Aucune maison liée à cet agent.</p>
-      )
-    }
+    {offres.length > 0 ? (
+      <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {offres.map((offre) => (
+          <OffreCard offre={offre} />
+        ))}
+      </div>
+    ) : (
+      <p class="text-gray-500">Aucune maison liée à cet agent.</p>
+    )}
   </section>
 </Layout>
