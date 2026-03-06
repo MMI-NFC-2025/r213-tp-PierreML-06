@@ -72,3 +72,61 @@ export async function addOffre(house) {
     return { success: false, message: "Une erreur est survenue en ajoutant la maison" };
   }
 }
+
+/**
+ * Récupère tous les agents
+ */
+export async function getAgents() {
+  try {
+    const data = await db.collection("agent").getFullList({
+      sort: "nom",
+    });
+    return data;
+  } catch (error) {
+    console.error("Une erreur est survenue en lisant la liste des agents :", error);
+    return [];
+  }
+}
+
+/**
+ * Récupère un agent par son id
+ */
+export async function getAgent(id) {
+  try {
+    const data = await db.collection("agent").getOne(id);
+    return data;
+  } catch (error) {
+    console.error("Une erreur est survenue en lisant l'agent :", error);
+    return null;
+  }
+}
+
+/**
+ * Récupère toutes les offres d’un agent
+ * Remplace "agent" dans le filter par le vrai nom du champ relation dans ta collection maison
+ */
+export async function getOffresByAgent(agentId) {
+  try {
+    const data = await db.collection("maison").getFullList({
+      sort: "-created",
+      filter: `agent="${agentId}"`,
+    });
+    return data;
+  } catch (error) {
+    console.error("Une erreur est survenue en lisant les offres de l'agent :", error);
+    return [];
+  }
+}
+
+/**
+ * Change la valeur du favori
+ */
+export async function setFavori(house) {
+  try {
+    await db.collection("maison").update(house.id, {
+      favori: !house.favori,
+    });
+  } catch (error) {
+    console.error("Une erreur est survenue lors de la mise à jour du favori :", error);
+  }
+}
