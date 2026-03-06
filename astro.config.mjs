@@ -9,5 +9,9 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
+  image: {
+    domains: ['agence.pierre-mouilleseaux-lhuillier.fr'],
+  },
+
   adapter: netlify()
 });
